@@ -50,6 +50,7 @@ if (isServer) then {
         missionNamespace setVariable [format [QGVAR(zeus_%1), _owner], _zeus];
         _zeus setVariable ["owner", _owner, true];
         _zeus setVariable ["Addons", 3, true];
+        _zeus setVariable ["BIS_fnc_initModules_disableAutoActivation", false];
         _zeus setCuratorCoef ["Place", 0];
         _zeus setCuratorCoef ["Delete", 0];
         _group deleteGroupWhenEmpty true;
@@ -81,7 +82,12 @@ if (hasInterface) then {
         [localize "str_a3_cfgvehicles_moduletasksetstate_f_arguments_state_values_created_0"] call EFUNC(common,displayTextStructured);
     }] call CBA_fnc_addEventHandler;
 
-    private _action = [
+    [QEGVAR(interact_menu,newControllableObject), {
+        params ["_type"];
+        if (!(_type isKindOf "CAManBase")) exitWith {};
+        TRACE_1("Adding zeus actions",_type);
+
+        private _action = [
         QGVAR(create),
         LLSTRING(CreateZeus),
         "\A3\Ui_F_Curator\Data\Logos\arma3_curator_eye_32_ca.paa",
@@ -98,10 +104,10 @@ if (hasInterface) then {
             }
             && {isNil QGVAR(zeus)}
         }
-    ] call EFUNC(interact_menu,createAction);
-    ["CAManBase", 1, ["ACE_SelfActions"], _action, true] call EFUNC(interact_menu,addActionToClass);
+        ] call EFUNC(interact_menu,createAction);
+        [_type, 1, ["ACE_SelfActions"], _action] call EFUNC(interact_menu,addActionToClass);
 
-    _action = [
+        _action = [
         QGVAR(delete),
         LLSTRING(DeleteZeus),
         "\A3\Ui_F_Curator\Data\Logos\arma3_curator_eye_32_ca.paa",
@@ -110,6 +116,7 @@ if (hasInterface) then {
             GVAR(zeus) = nil;
         },
         {!(isNil QGVAR(zeus) || {isNull GVAR(zeus)})}
-    ] call EFUNC(interact_menu,createAction);
-    ["CAManBase", 1, ["ACE_SelfActions"], _action, true] call EFUNC(interact_menu,addActionToClass);
+        ] call EFUNC(interact_menu,createAction);
+        [_type, 1, ["ACE_SelfActions"], _action] call EFUNC(interact_menu,addActionToClass);
+    }] call CBA_fnc_addEventHandler;
 };
