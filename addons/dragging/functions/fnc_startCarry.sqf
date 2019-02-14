@@ -44,11 +44,20 @@ if (_target isKindOf "CAManBase") then {
     // move a bit closer and adjust direction when trying to pick up a person
     _target setDir (getDir _unit + 180);
     _target setPosASL (getPosASL _unit vectorAdd (vectorDir _unit));
+	
+	
+	_unit SetAnimSpeedCoef 2.14;
+	_target SetAnimSpeedCoef 2.14;
 
     [_unit, "AcinPknlMstpSnonWnonDnon_AcinPercMrunSnonWnonDnon", 2, true] call EFUNC(common,doAnimation);
     [_target, "AinjPfalMstpSnonWrflDnon_carried_Up", 2, true] call EFUNC(common,doAnimation);
 
-    _timer = CBA_missionTime + 15;
+    _timer = CBA_missionTime + 7;
+	
+	[_unit,_target] spawn {
+	sleep 7;
+	_this select 0 SetAnimSpeedCoef 1.10;
+	_this select 1 SetAnimSpeedCoef 1.10;
 
 } else {
 
@@ -56,6 +65,11 @@ if (_target isKindOf "CAManBase") then {
     _unit action ["SwitchWeapon", _unit, _unit, 299];
     [_unit, "AmovPercMstpSnonWnonDnon", 0] call EFUNC(common,doAnimation);
 
+	[_unit,_target] spawn {
+	sleep 7;
+	_this select 0 SetAnimSpeedCoef 1.10;
+	_this select 1 SetAnimSpeedCoef 1.10;
+	};							
     [_unit, "forceWalk", "ACE_dragging", true] call EFUNC(common,statusEffect_set);
 
 };
@@ -73,3 +87,9 @@ _unit setVariable [QGVAR(isCarrying), true, true];
 _unit setVariable [QGVAR(carriedObject), _target, true];
 
 [FUNC(startCarryPFH), 0.2, [_unit, _target, _timer]] call CBA_fnc_addPerFrameHandler;
+	
+	[_unit,_target] spawn {
+	sleep 5;
+	_this select 0 SetAnimSpeedCoef 1.10;
+	_this select 1 SetAnimSpeedCoef 1.10;
+   	};
